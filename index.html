@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>코로나 19 백신 접종 현황</title>
+<meta charset="UTF-8">
+<meta name="Generator" content="EditPlus®">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, minimum-scale=1, maximum-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="Author" content="">
+<meta name="Keywords" content="">
+<meta name="Description" content="">
+<!--폰트 나눔고딕-->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+
+<link href="css/layout.css" rel="stylesheet" type="text/css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+//날짜
+var date = "2021-03-11";
+get_data(date);
+
+function get_data(date){
+	var url = "https://api.odcloud.kr/api/15077756/v1/vaccine-stat?";
+	url += "page=1&perPage=18&";
+	url += "cond[baseDate::EQ]="+date+"%2000:00:00&";
+	//인증키
+	url += "serviceKey=q0Li6I0cKZsWgDddsnkHuWNi0N7LGBt8gsjq41m6Y99Wa5T5omhlEcoc1Wgo1Y15yvkOu1DI9OI6ToMr1OU73A%3D%3D";
+	$.ajax({
+		url: url,
+		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+		type:'GET',
+		datatype:'json',
+		data:'',
+		success:function(result){
+			$("#get_data").html('');
+			if(result.data.length == 0){
+				data ="2011년 3월 11일 부터 ~ 오늘까지 중에 선택해주세요";
+				$('#get_data').append(data);
+			}
+			for(i=0; i<result.data.length; i++){
+				var data = "<div class='place'>";
+						data += "시도 : " + result.data[i].sido + "<br>";
+						data += "1차접종(오늘) : " + result.data[i].firstCnt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "<br>";
+						data += "2차접종(오늘) : " + result.data[i].secondCnt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "<br>";
+						data += "1차접종(총합) : " + result.data[i].totalFirstCnt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "<br>";
+						data += "2차접종(총합) : " + result.data[i].totalSecondCnt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+				data +="</div>";
+				$('#get_data').append(data);
+			}
+		}
+	});
+}
+</script>
+</head>
+<body>
+	<header>
+		<div id="logo">
+			<h1><a href="index.html"><img src="./img/logo.jpg" alt=""/></a></h1>
+		</div>
+		<nav>
+			<ul class="clearfix align_right">
+				<li><a href="#"><h2>일일 확진자</h2></a></li>
+				<li><a href="#"><h2>백신 접종 현황</h2></a></li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+		<div>	
+			<input type="date" value="2021-03-11" onchange="get_data(this.value);">
+			<div id="get_data">
+			</div>		
+		</div>
+	</section>
+	<footer>
+		Copyrightⓒheesoo<br>
+		<a href="#">도움말</a>
+		<a href="#">의견보내기</a>
+		<a href="#">개인정보처리방침</a>
+		<a href="#">약관</a>
+	</footer>
+</body>
+</html>
